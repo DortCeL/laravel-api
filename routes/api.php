@@ -153,3 +153,143 @@ Route::get('/above-average-spenders', function () {
 
     return response()->json($results);
 });
+
+//Station
+Route::get('/stations', function () {
+    $results = DB::select("
+        SELECT 
+            station_id, 
+            station_name, 
+            state 
+        FROM stations
+    ");
+
+    return response()->json($results);
+});
+//get_station_byid
+Route::get('/stations/{id}', function ($id) {
+    $results = DB::select("
+        SELECT 
+            station_id, 
+            station_name, 
+            state 
+        FROM stations
+        WHERE station_id = ?
+    ", [$id]);
+
+    return response()->json($results);
+});
+
+
+Route::get('/stations/open', function () {
+    $results = DB::select("
+        SELECT 
+            station_id, 
+            station_name 
+        FROM stations
+        WHERE state = 'open'
+    ");
+
+    return response()->json($results);
+});
+Route::get('/stations/closed', function () {
+    $results = DB::select("
+        SELECT 
+            station_id, 
+            station_name 
+        FROM stations
+        WHERE state = 'closed'
+    ");
+
+    return response()->json($results);
+});
+
+// Route::get('/stations/sorted', function () {
+//     $results = DB::select("
+//         SELECT 
+//             station_id, 
+//             station_name, 
+//             state 
+//         FROM stations
+//         ORDER BY station_name ASC
+//     ");
+
+//     return response()->json($results);
+// });
+
+//stationput
+
+Route::put('/stations/{id}', function (Request $request, $id) {
+    $state = $request->input('state');
+
+    if (!in_array($state, ['open', 'closed'])) {
+        return response()->json(['error' => 'Invalid state value. Use "open" or "closed".'], 400);
+    }
+
+    $updated = DB::update("UPDATE stations SET state = ? WHERE station_id = ?", [$state, $id]);
+
+    if ($updated) {
+        return response()->json(['message' => 'Station state updated successfully.']);
+    } else {
+        return response()->json(['error' => 'Station not found or no change made.'], 404);
+    }
+});
+
+//complaint
+Route::get('/complaints', function () {
+    $results = DB::select("
+        SELECT 
+            complaints.complaint_id, 
+            complaints.user_id, 
+            users.name AS user_name, 
+            users.email AS user_email, 
+            complaints.complain_msg, 
+            complaints.status, 
+            complaints.created_at
+        FROM complaints
+        JOIN users ON complaints.user_id = users.id
+    ");
+
+    return response()->json($results);
+});
+
+Route::get('/complaints/pending', function () {
+    $results = DB::select("
+        SELECT 
+            complaints.complaint_id, 
+            complaints.user_id, 
+            users.name AS user_name, 
+            users.email AS user_email, 
+            complaints.complain_msg, 
+            complaints.status, 
+            complaints.created_at
+        FROM complaints
+        JOIN users ON complaints.user_id = users.id
+        WHERE complaints.status = 'pending'
+    ");
+
+    return response()->json($results);
+});
+
+
+Route::get('/complaints/resolved', function () {
+    $results = DB::select("
+        SELECT 
+            complaints.complaint_id, 
+            complaints.user_id, 
+            users.name AS user_name, 
+            users.email AS user_email, 
+            complaints.complain_msg, 
+            complaints.status, 
+            complaints.created_at
+        FROM complaints
+        JOIN users ON complaints.user_id = users.id
+        WHERE complaints.status = 'resolved'
+    ");
+
+    return response()->json($results);
+});
+
+
+
+
