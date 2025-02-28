@@ -289,6 +289,41 @@ Route::get('/complaints/resolved', function () {
 
     return response()->json($results);
 });
+//user posting complaints
+Route::post('/complaints', function (Request $request) {
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'complain_msg' => 'required|string|max:500',
+    ]);
+
+    DB::table('complaints')->insert([
+        'user_id' => $request->input('user_id'),
+        'complain_msg' => $request->input('complain_msg'),
+        'status' => 'pending',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    return response()->json(['message' => 'Complaint submitted successfully'], 201);
+});
+
+//  Admin marks a complaint as resolved (PUT)
+Route::put('/complaints/{id}/resolve', function ($id) {
+    $complaint = DB::table('complaints')->where('complaint_id', $id)->first();
+
+    if (!$complaint) {
+        return response()->json(['message' => 'Complaint not found'], 404);
+    }
+
+    DB::table('complaints')
+        ->where('complaint_id', $id)
+        ->update([
+            'status' => 'resolved',
+            'updated_at' => now(),
+        ]);
+
+    return response()->json(['message' => 'Complaint marked as resolved']);
+});
 
 
 
