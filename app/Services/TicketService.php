@@ -122,4 +122,18 @@ class TicketService
             ORDER BY total_spent DESC
         ");
     }
+
+    public function getTicketPrice($source, $destination)
+{
+    $result = DB::select("
+        SELECT fare
+        FROM routes
+        WHERE source = ? AND destination = ?
+    ", [$source, $destination]);
+
+    // Return only the fare value, or null if no result is found
+    return $result[0]->fare ?? null;
+}
+
+
 }

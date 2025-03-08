@@ -37,8 +37,9 @@ Route::prefix('tickets')->group(function () {
     Route::get('/users-without-tickets', [TicketController::class, 'getUsersWithoutTickets']);
     Route::get('/popular-destination', [TicketController::class, 'getPopularDestination']);
     Route::get('/above-average-spenders', [TicketController::class, 'getAboveAverageSpenders']);
+    Route::get('/price', [TicketController::class, 'getTicketPrice']);
+    
 });
-
 
 
 // Staff routes

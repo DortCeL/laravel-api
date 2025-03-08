@@ -48,4 +48,11 @@ class TicketController extends Controller
     {
         return response()->json($this->ticketService->getAboveAverageSpenders());
     }
+    public function getTicketPrice(Request $request)
+    {
+        $source = $request->query('source');
+        $destination = $request->query('destination');
+
+        return response()->json($this->ticketService->getTicketPrice($source, $destination));
+    }
 }
