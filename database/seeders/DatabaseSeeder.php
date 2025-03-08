@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
             TicketSeeder::class,
             StationSeeder::class,
             ComplaintSeeder::class,
+            StaffSeeder::class,
+            RouteSeeder::class,
         ]);
     }
 }
